@@ -90,37 +90,37 @@ while(option != 3):
                     if(dicttasks):
                         tasks = TableTask(nickname, taskdao, dicttasks)
                         print(tasks)
-                        id_edit = input("Digite o Id da tarefa que deseja editar")
-                        if(dicttask.get("1"+str(id_edit), "") or dicttask.get("2"+str(id_edit), "") or dicttask.get("3"+str(id_edit), "")):
+                        id_edit = input("Digite o Id da tarefa que deseja editar: ")
+                        if(dicttasks.get("1"+str(id_edit), "") or dicttasks.get("2"+str(id_edit), "") or dicttasks.get("3"+str(id_edit), "")):
                             while(info_alterar!="1" and info_alterar!="2" and info_alterar!="3"):
                                 info_alterar = input("Digite a informação que deseja alterar:\n1-Titulo\n2-Descrição\n3-Prioridade\n")
                             if(info_alterar == "1"):
                                 new_title = input("Digite o novo titulo")
-                                if(dicttask.get("1"+id_edit, "")):
-                                    dicttask["1"+id_edit] = new_title
-                                elif(dicttask.get("2"+id_edit, "")):
-                                    dicttask["2"+id_edit] = new_title
-                                elif(dicttask.get("3"+id_edit, "")):
-                                    dicttask["3"+id_edit] = new_title
-                                userdao.DeleteUpdate(dicttask, nickname)
+                                if(dicttasks.get("1"+id_edit, "")):
+                                    dicttasks["1"+id_edit][1] = new_title
+                                elif(dicttasks.get("2"+id_edit, "")):
+                                    dicttasks["2"+id_edit][1] = new_title
+                                elif(dicttasks.get("3"+id_edit, "")):
+                                    dicttasks["3"+id_edit][1] = new_title
+                                taskdao.DeleteUpdate(dicttasks, nickname)
                             elif(info_alterar == "2"):
                                 new_desc = input("Digite a nova descrição")
-                                if(dicttask.get("1"+id_edit, "")):
-                                    dicttask["1"+id_edit] = new_desc
-                                elif(dicttask.get("2"+id_edit, "")):
-                                    dicttask["2"+id_edit] = new_desc
-                                elif(dicttask.get("3"+id_edit, "")):
-                                    dicttask["3"+id_edit] = new_desc
-                                userdao.DeleteUpdate(dicttask, nickname)
+                                if(dicttasks.get("1"+id_edit, "")):
+                                    dicttasks["1"+id_edit][2] = new_desc
+                                elif(dicttasks.get("2"+id_edit, "")):
+                                    dicttasks["2"+id_edit][2] = new_desc
+                                elif(dicttasks.get("3"+id_edit, "")):
+                                    dicttasks["3"+id_edit][2] = new_desc
+                                taskdao.DeleteUpdate(dicttasks, nickname)
                             elif(info_alterar == "3"):
                                 new_priorirty = input("Digite qual a nova prioridade:\n1-Alta\n2-Média\n3-Baixa")
-                                if(dicttask.get("1"+id_edit, "")):
-                                    dicttask["1"+id_edit] = new_priorirty
-                                elif(dicttask.get("2"+id_edit, "")):
-                                    dicttask["2"+id_edit] = new_priorirty
-                                elif(dicttask.get("3"+id_edit, "")):
-                                    dicttask["3"+id_edit] = new_priorirty
-                                userdao.DeleteUpdate(dicttask, nickname)
+                                if(dicttasks.get("1"+id_edit, "")):
+                                    dicttasks["1"+id_edit][3] = new_priorirty
+                                elif(dicttasks.get("2"+id_edit, "")):
+                                    dicttasks["2"+id_edit][3] = new_priorirty
+                                elif(dicttasks.get("3"+id_edit, "")):
+                                    dicttasks["3"+id_edit][3] = new_priorirty
+                                taskdao.DeleteUpdate(dicttasks, nickname)
                             print("Tarefa alterada com sucesso!")
                         else:
                             print("O Id informado não existe!")
