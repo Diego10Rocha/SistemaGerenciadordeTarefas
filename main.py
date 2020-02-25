@@ -3,12 +3,14 @@ from funcoes import *
 from User import User
 from UserDAO import UserDAO
 from TaskDAO import TaskDAO
+
 option = 0
 
 while(option != 3):
     option = PegarOpcaoDoMenu(3)
     usersingularity = True
 
+    #Bloco de código para cadastrar um usuário
     if(option == 1):
         usersexists = False
         userdao = UserDAO
@@ -17,11 +19,12 @@ while(option != 3):
         if(users):
             usersexists = True
 
+        #Bloco de código para verificar se o nickname desejado pelo usuario ainda não foi utilizado
         while(usersexists and usersingularity):
             usersingularity = False
             boolsingularity = True
             nickname = input("Digite seu nickname\n")
-            while(nickname==""):
+            while(nickname == ""):
                 nickname = input("Seu nickname não pode ser vazio, digite novamente\n")
             if(users):
                 for elemento in users:
@@ -43,6 +46,7 @@ while(option != 3):
         user = User(nickname, hashpass)
         userdao.insertUser(user)
 
+    #Bloco de código para o login de um usuário
     elif(option == 2):
         userdao = UserDAO
         taskdao = TaskDAO
@@ -52,10 +56,12 @@ while(option != 3):
         hashpass = CriptografarSenha(password)
 
         boollog = userdao.login(nickname, hashpass)
+        #Se o usuário conseguir logar, o submenu relacionado a tarefas é mostrado
         if(boollog):
             while True:
                 option = PegarOpcaoDoMenu(5)
 
+                #Bloco de código para cadastrar uma tarefa
                 if(option == 1):
                     titulo = input("Digite o titulo da tarefa")
                     descricao = input("Digite a descrição da tarefa")
@@ -63,19 +69,82 @@ while(option != 3):
                     while(prioridade!="1" and prioridade!="2" and prioridade!="3"):
                         prioridade = input("Digite a prioridade da tarefa:\n1- Alta \n2-Média \n3- Baixa")
 
-                    id_task = taskdao.getDicTask()
-                    task = Task(id_task, titulo, descricao, prioridade)
+                    ultimoId = taskdao.getUltimoId(nickname)
+                    id_task = ultimoId+1
+                    task = Task(titulo, descricao, prioridade, id_task, nickname)
                     taskdao.insertTask(task)
 
+                #Bloco de código para visualizar as tarefas do usuário logado
                 elif(option == 2):
-                    print("opcao 2")
+                    dicttasks = taskdao.getDicTask(nickname)
+                    if(dicttasks):
+                        tasks = TableTask(nickname, taskdao, dicttasks)
+                        print(tasks)
+                    else:
+                        print("Não há tarefas cadastradas")
 
+                #Bloco de código para alterar informações das tarefas do usuário
                 elif(option == 3):
-                    print("opcao 3")
+                    dicttasks = taskdao.getDicTask(nickname)
+                    info_alterar = ""
+                    if(dicttasks):
+                        tasks = TableTask(nickname, taskdao, dicttasks)
+                        print(tasks)
+                        id_edit = input("Digite o Id da tarefa que deseja editar")
+                        if(dicttask.get("1"+str(id_edit), "") or dicttask.get("2"+str(id_edit), "") or dicttask.get("3"+str(id_edit), "")):
+                            while(info_alterar!="1" and info_alterar!="2" and info_alterar!="3"):
+                                info_alterar = input("Digite a informação que deseja alterar:\n1-Titulo\n2-Descrição\n3-Prioridade\n")
+                            if(info_alterar == "1"):
+                                new_title = input("Digite o novo titulo")
+                                if(dicttask.get("1"+id_edit, "")):
+                                    dicttask["1"+id_edit] = new_title
+                                elif(dicttask.get("2"+id_edit, "")):
+                                    dicttask["2"+id_edit] = new_title
+                                elif(dicttask.get("3"+id_edit, "")):
+                                    dicttask["3"+id_edit] = new_title
+                                userdao.DeleteUpdate(dicttask, nickname)
+                            elif(info_alterar == "2"):
+                                new_desc = input("Digite a nova descrição")
+                                if(dicttask.get("1"+id_edit, "")):
+                                    dicttask["1"+id_edit] = new_desc
+                                elif(dicttask.get("2"+id_edit, "")):
+                                    dicttask["2"+id_edit] = new_desc
+                                elif(dicttask.get("3"+id_edit, "")):
+                                    dicttask["3"+id_edit] = new_desc
+                                userdao.DeleteUpdate(dicttask, nickname)
+                            elif(info_alterar == "3"):
+                                new_priorirty = input("Digite qual a nova prioridade:\n1-Alta\n2-Média\n3-Baixa")
+                                if(dicttask.get("1"+id_edit, "")):
+                                    dicttask["1"+id_edit] = new_priorirty
+                                elif(dicttask.get("2"+id_edit, "")):
+                                    dicttask["2"+id_edit] = new_priorirty
+                                elif(dicttask.get("3"+id_edit, "")):
+                                    dicttask["3"+id_edit] = new_priorirty
+                                userdao.DeleteUpdate(dicttask, nickname)
+                            print("Tarefa alterada com sucesso!")
+                        else:
+                            print("O Id informado não existe!")
+                    else:
+                        print("Não há tarefas cadastradas")
 
+                #Bloco de código para excluir as tarefas do usuário logado
                 elif(option == 4):
-                    print("opcao 4")
+                    dicttasks = taskdao.getDicTask(nickname)
+                    tasks = TableTask(nickname, taskdao, dicttask)
+                    print(tasks)
+                    id_excluir = input("Digite o Id da tarefa que deseja excluir: ")
+                    dicttask = taskdao.getDicTask(nickname)
 
+                    if(dicttask.get("1"+id_excluir, "")):
+                        del dicttask["1"+id_excluir]
+                    elif(dicttask.get("2"+id_excluir, "")):
+                        del dicttask["2"+id_excluir]
+                    elif(dicttask.get("3"+id_excluir, "")):
+                        del dicttask["3"+id_excluir]
+                    taskdao.DeleteUpdate(dicttask, nickname)
+                    print("Tarefa excluída!")
+
+                #Bloco de código para fazer o logout do usuário
                 elif(option == 5):
                     option = PegarOpcaoDoMenu(3)
                     break
