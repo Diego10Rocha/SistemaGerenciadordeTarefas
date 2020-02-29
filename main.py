@@ -8,7 +8,7 @@ option = 0
 
 while(option != 3):
     option = PegarOpcaoDoMenu(3)
-    usersingularity = True
+    usersingularity = False
 
     #Bloco de código para cadastrar um usuário
     if(option == 1):
@@ -20,25 +20,37 @@ while(option != 3):
             usersexists = True
 
         #Bloco de código para verificar se o nickname desejado pelo usuario ainda não foi utilizado
-        while(usersexists and usersingularity):
-            usersingularity = False
+        while(usersexists and not usersingularity):
+            usersingularity = True
             boolsingularity = True
+            charforbidden = False
             nickname = input("Digite seu nickname\n")
-            while(nickname == ""):
-                nickname = input("Seu nickname não pode ser vazio, digite novamente\n")
-            if(users):
-                for elemento in users:
-                    if(elemento == nickname):
-                        usersingularity = True
-                        break
-            if(not usersingularity):
-                boolsingularity = False
-                break
+            for i in range(len(nickname)):
+                if(nickname[i] == "/" or nickname[i] == '\\'):
+                    charforbidden = True
+            while(nickname == "" or charforbidden):
+                charforbidden = False
+                nickname = input("Seu nickname não pode ser vazio nem conter os caracteres '/ e \ ', digite novamente\n")
+                for i in range(len(nickname)):
+                    if(nickname[i] == "/" or nickname[i] == '\\'):
+                        charforbidden = True
+            for elemento in users:
+                if(elemento == nickname):
+                    usersingularity = False
+                    break
 
         if(not boolsingularity):
+            charforbidden = False
             nickname = input("Digite seu nickname\n")
-            while(nickname==""):
-                nickname = input("Seu nickname não pode ser vazio, digite novamente\n")
+            for i in range(len(nickname)):
+                if(nickname[i] == "/" or nickname[i] == '\\'):
+                    charforbidden = True
+            while(nickname == "" or charforbidden):
+                charforbidden = False
+                nickname = input("Seu nickname não pode ser vazio nem conter os caracteres '/ e \ ', digite novamente\n")
+                for i in range(len(nickname)):
+                    if(nickname[i] == "/" or nickname[i] == '\\'):
+                        charforbidden = True
 
         password = input("Digite sua senha\n")
         hashpass = CriptografarSenha(password)

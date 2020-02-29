@@ -11,6 +11,7 @@ class UserDAO:
 
 	#Bloco de código pra pegar os usuários cadastrados e inserir em um dicionário
 	def getDicUser(self):
+		dicusers = {}
 		try:
 			with open("usuarios.txt", "r") as arquivo:
 				userjson = arquivo.read()
@@ -20,7 +21,7 @@ class UserDAO:
 				#print(dicusers)
 				return dicusers
 		except:
-			return ""
+			return dicusers
 
 	#Bloco de código para efetuar o login de um usuário
 	def login(nick, password):
