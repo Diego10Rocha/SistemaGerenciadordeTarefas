@@ -1,8 +1,15 @@
 import json
 from pickle import *
+from funcoes import *
+import os
 class TaskDAO:
 	#Bloco de código para inserir uma tarefa
-	def insertTask(self):
+	def insertTask(self, user):
+		dir = "./Tasks"
+		try:
+			os.mkdir(dir)
+		except:
+			pass
 		chave = self.prioridade+ str(self.id_task)
 		dictTask = "{\""+chave+"\": [\""+str(self.id_task)+"\",\""+ self.titulo+"\",\""+ self.descricao+"\",\""+ self.prioridade+"\"]}"
 		dictKeys = "{\""+str(self.id_task)+"\": \""+str(self.id_task)+"\"}"
@@ -10,6 +17,8 @@ class TaskDAO:
 			dump(dictTask, file)
 		with open("Tasks/"+self.user+".id", "ab") as file:
 			dump(dictKeys, file)
+		dicttask = TaskDAO.getDicTask(user.login)
+		OrdenaTask(user, TaskDAO, dicttask)
 
 	#Bloco de código paraa pegar as tarefas do usuário logado no sistema e inserir num dicionário
 	def getDicTask(nick):

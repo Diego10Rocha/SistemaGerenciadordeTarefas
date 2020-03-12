@@ -36,9 +36,9 @@ def CriptografarSenha(senha):
 	hashpass=hash.hexdigest()
 	return hashpass
 #Bloco de código para criar uma tabela com as tarefas de um usuário
-def TableTask(nickname, taskdao, dicttasks):
+def OrdenaTask(user, taskdao, dicttasks):
 	tasks = PrettyTable(["Id", "Título", "Descrição", "Prioridade"])
-	qtdIds = taskdao.getUltimoId(nickname)
+	qtdIds = taskdao.getUltimoId(user.login)
 
 	# Alinha as colunas
 	tasks.align["Id"] = "l"
@@ -65,4 +65,5 @@ def TableTask(nickname, taskdao, dicttasks):
 
 			if(values_dict):
 				tasks.add_row([idtask, titulo_task, descricao_task, strprioridade])
+				user.tasks.append([idtask, titulo_task, descricao_task, strprioridade])
 	return tasks

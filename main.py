@@ -66,6 +66,7 @@ while(option != 3):
         nickname = input("Digite seu nickname\n")
         password = input("Digite sua senha\n")
         hashpass = CriptografarSenha(password)
+        user = User(nickname, hashpass)
 
         boollog = userdao.login(nickname, hashpass)
         #Se o usuário conseguir logar, o submenu relacionado a tarefas é mostrado
@@ -75,8 +76,14 @@ while(option != 3):
 
                 #Bloco de código para cadastrar uma tarefa
                 if(option == 1):
-                    titulo = input("Digite o titulo da tarefa")
-                    descricao = input("Digite a descrição da tarefa")
+                    while True:
+                        titulo = input("Digite o titulo da tarefa")
+                        if(titulo!=""):
+                            break
+                    while True:
+                        descricao = input("Digite a descrição da tarefa")
+                        if(descricao!=""):
+                            break
                     prioridade = ""
                     while(prioridade!="1" and prioridade!="2" and prioridade!="3"):
                         prioridade = input("Digite a prioridade da tarefa:\n1- Alta \n2-Média \n3- Baixa")
@@ -84,13 +91,13 @@ while(option != 3):
                     ultimoId = taskdao.getUltimoId(nickname)
                     id_task = ultimoId+1
                     task = Task(titulo, descricao, prioridade, id_task, nickname)
-                    taskdao.insertTask(task)
+                    taskdao.insertTask(task, user)
 
                 #Bloco de código para visualizar as tarefas do usuário logado
                 elif(option == 2):
                     dicttasks = taskdao.getDicTask(nickname)
                     if(dicttasks):
-                        tasks = TableTask(nickname, taskdao, dicttasks)
+                        tasks = OrdenaTask(user, taskdao, dicttasks)
                         print(tasks)
                     else:
                         print("Não há tarefas cadastradas")
@@ -100,7 +107,7 @@ while(option != 3):
                     dicttasks = taskdao.getDicTask(nickname)
                     info_alterar = ""
                     if(dicttasks):
-                        tasks = TableTask(nickname, taskdao, dicttasks)
+                        tasks = OrdenaTask(nickname, taskdao, dicttasks)
                         print(tasks)
                         id_edit = input("Digite o Id da tarefa que deseja editar: ")
                         if(dicttasks.get("1"+str(id_edit), "") or dicttasks.get("2"+str(id_edit), "") or dicttasks.get("3"+str(id_edit), "")):
@@ -142,7 +149,7 @@ while(option != 3):
                 #Bloco de código para excluir as tarefas do usuário logado
                 elif(option == 4):
                     dicttasks = taskdao.getDicTask(nickname)
-                    tasks = TableTask(nickname, taskdao, dicttask)
+                    tasks = OrdenaTask(nickname, taskdao, dicttask)
                     print(tasks)
                     id_excluir = input("Digite o Id da tarefa que deseja excluir: ")
                     dicttask = taskdao.getDicTask(nickname)
