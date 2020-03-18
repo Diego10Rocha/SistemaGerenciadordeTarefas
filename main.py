@@ -11,25 +11,24 @@ do código, e estou ciente que estes trechos não serão considerados para fins 
 ******************************************************************************************
 '''
 
-from Task import Task
-from funcoes import *
+
 from User import User
-from UserDAO import UserDAO
-from TaskDAO import TaskDAO
+from Task import Task
 import os
+
+from funcoes import PegarOpcaoDoMenu, CriptografarSenha, getUltimoId, OrdenaTask
 
 option = 0
 
 while(option != 3):
-    os.system('cls')
+    os.system('cls' if os.name == 'nt' else 'clear')
     option = PegarOpcaoDoMenu(3)
     usersingularity = False
 
     #Bloco de código para cadastrar um usuário
     if(option == 1):
         usersexists = False
-        userdao = UserDAO
-        users = userdao.getDicUser("")
+        users = User.getDicUser("")
         boolsingularity = False
         if(users):
             usersexists = True
@@ -76,14 +75,12 @@ while(option != 3):
         hashpass = CriptografarSenha(password)
 
         user = User(nickname, hashpass)
-        userdao.insertUser(user)
+        user.insertUser()
 
     #Bloco de código para o login de um usuário
     elif(option == 2):
-        userdao = UserDAO
-        taskdao = TaskDAO
 
-        os.system('cls')
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("#"*22)
         print("#       Login        #")
         print("#"*22)
@@ -93,17 +90,19 @@ while(option != 3):
         hashpass = CriptografarSenha(password)
         user = User(nickname, hashpass)
 
-        os.system('cls')
-        boollog = userdao.login(nickname, hashpass)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        boollog = user.loginUser()
 
         #Se o usuário conseguir logar, o submenu relacionado a tarefas é mostrado
         if(boollog):
+            dicttasks = Task.getDicTask(Task, user.login)
+            OrdenaTask(user, dicttasks)
             while True:
                 option = PegarOpcaoDoMenu(5)
 
                 #Bloco de código para cadastrar uma tarefa
                 if(option == 1):
-                    os.system('cls')
+                    os.system('cls' if os.name == 'nt' else 'clear')
                     print("#" * 26)
                     print("#   Cadastro de tarefas  #")
                     print("#" * 26)
@@ -119,34 +118,34 @@ while(option != 3):
                     while(prioridade!="1" and prioridade!="2" and prioridade!="3"):
                         prioridade = input("Digite a prioridade da tarefa:\n1- Alta \n2- Média \n3- Baixa\n")
 
-                    os.system("cls")
-                    ultimoId = taskdao.getUltimoId(nickname)
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    ultimoId = getUltimoId(user.login)
                     id_task = ultimoId+1
-                    task = Task(titulo, descricao, prioridade, id_task, nickname)
-                    taskdao.insertTask(task, user)
+                    task = Task(titulo, descricao, prioridade, id_task, user.login)
+                    task.insertTask(user)
 
                 #Bloco de código para visualizar as tarefas do usuário logado
                 elif(option == 2):
-                    os.system("cls")
-                    dicttasks = taskdao.getDicTask(nickname)
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    dicttasks = Task.getDicTask(Task, user.login)
                     if(dicttasks):
-                        tasks = OrdenaTask(user, taskdao, dicttasks)
+                        tasks = OrdenaTask(user, dicttasks)
                         print(tasks)
                     else:
                         print("Não há tarefas cadastradas")
                     input("Aperte enter para voltar ao menu de tarefas.")
-                    os.system("cls")
+                    os.system('cls' if os.name == 'nt' else 'clear')
 
                 #Bloco de código para alterar informações das tarefas do usuário
                 elif(option == 3):
-                    os.system("cls")
-                    dicttasks = taskdao.getDicTask(nickname)
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    dicttasks = Task.getDicTask(Task, user.login)
                     info_alterar = ""
                     if(dicttasks):
-                        tasks = OrdenaTask(user, taskdao, dicttasks)
+                        tasks = OrdenaTask(user, dicttasks)
                         print(tasks)
                         id_edit = input("Digite o Id da tarefa que deseja editar: ")
-                        os.system("cls")
+                        os.system('cls' if os.name == 'nt' else 'clear')
                         if(dicttasks.get("1"+str(id_edit), "") or dicttasks.get("2"+str(id_edit), "") or dicttasks.get("3"+str(id_edit), "")):
                             while(info_alterar!="1" and info_alterar!="2" and info_alterar!="3"):
                                 info_alterar = input("Digite a informação que deseja alterar:\n1-Titulo\n2-Descrição\n3-Prioridade\n")
@@ -158,7 +157,7 @@ while(option != 3):
                                     dicttasks["2"+id_edit].titulo = new_title
                                 elif(dicttasks.get("3"+id_edit, "")):
                                     dicttasks["3"+id_edit].titulo = new_title
-                                taskdao.DeleteUpdate(dicttasks, nickname)
+                                Task.DeleteOrUpdate(dicttasks, nickname)
                             elif(info_alterar == "2"):
                                 new_desc = input("Digite a nova descrição:\n")
                                 if(dicttasks.get("1"+id_edit, "")):
@@ -167,45 +166,53 @@ while(option != 3):
                                     dicttasks["2"+id_edit].descricao = new_desc
                                 elif(dicttasks.get("3"+id_edit, "")):
                                     dicttasks["3"+id_edit].descricao = new_desc
-                                taskdao.DeleteUpdate(dicttasks, nickname)
+                                Task.DeleteOrUpdate(dicttasks, nickname)
                             elif(info_alterar == "3"):
-                                new_priorirty = input("Digite qual a nova prioridade:\n1-Alta\n2-Média\n3-Baixa\n")
-                                if(dicttasks.get("1"+id_edit, "")):
-                                    dicttasks["1"+id_edit].prioridade = new_priorirty
-                                elif(dicttasks.get("2"+id_edit, "")):
+                                new_priorirty = ""
+                                while(new_priorirty!="1" and new_priorirty!="2" and new_priorirty!="3"):
+                                    new_priorirty = input("Digite qual a nova prioridade:\n1-Alta\n2-Média\n3-Baixa\n")
+                                if(dicttasks.get("1" + id_edit, "")):
+                                    dicttasks["1" + id_edit].prioridade = new_priorirty
+                                    dicttasks[new_priorirty + id_edit] = dicttask["1"+id_edit]
+                                    del dicttasks["1"+id_edit]
+                                elif(dicttasks.get("2" + id_edit, "")):
                                     dicttasks["2"+id_edit].prioridade = new_priorirty
+                                    dicttasks[new_priorirty + id_edit] = dicttasks["2"+id_edit]
+                                    del dicttasks["2"+id_edit]
                                 elif(dicttasks.get("3"+id_edit, "")):
                                     dicttasks["3"+id_edit].prioridade = new_priorirty
-                                os.system("cls")
-                                taskdao.DeleteUpdate(dicttasks, nickname)
+                                    dicttasks[new_priorirty + id_edit] = dicttasks["3"+id_edit]
+                                    del dicttasks["3"+id_edit]
+                                os.system('cls' if os.name == 'nt' else 'clear')
+                                Task.DeleteOrUpdate(Task, dicttasks, nickname)
                         else:
-                            os.system("cls")
+                            os.system('cls' if os.name == 'nt' else 'clear')
                             print("O Id informado não existe!")
                     else:
-                        os.system("cls")
+                        os.system('cls' if os.name == 'nt' else 'clear')
                         print("Não há tarefas cadastradas!")
                         input("Aperte enter para continuar.")
 
                 #Bloco de código para excluir as tarefas do usuário logado
                 elif(option == 4):
-                    os.system("cls")
-                    dicttasks = taskdao.getDicTask(nickname)
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    dicttasks = Task.getDicTask(Task, user.login)
                     if(dicttasks):
-                        tasks = OrdenaTask(user, taskdao, dicttasks)
+                        tasks = OrdenaTask(user, dicttasks)
                         print(tasks)
                         id_excluir = input("Digite o Id da tarefa que deseja excluir: ")
-                        os.system("cls")
-                        dicttask = taskdao.getDicTask(nickname)
+                        os.system('cls' if os.name == 'nt' else 'clear')
+                        dicttask = Task.getDicTask(Task, user.login)
 
                         if(dicttask.get("1"+id_excluir, "")):
                             del dicttask["1"+id_excluir]
-                            taskdao.DeleteUpdate(dicttask, nickname)
+                            Task.DeleteOrUpdate(Task, dicttask, nickname)
                         elif(dicttask.get("2"+id_excluir, "")):
                             del dicttask["2"+id_excluir]
-                            taskdao.DeleteUpdate(dicttask, nickname)
+                            Task.DeleteOrUpdate(Task, dicttask, nickname)
                         elif(dicttask.get("3"+id_excluir, "")):
                             del dicttask["3"+id_excluir]
-                            taskdao.DeleteUpdate(dicttask, nickname)
+                            Task.DeleteOrUpdate(Task, dicttask, nickname)
                         else:
                             print("O Id informado não existe!")
                             input("Aperte enter para voltar ao menu de tarefas")
@@ -214,6 +221,6 @@ while(option != 3):
 
                 #Bloco de código para fazer o logout do usuário
                 elif(option == 5):
-                    os.system("cls")
+                    os.system('cls' if os.name == 'nt' else 'clear')
                     option = PegarOpcaoDoMenu(3)
                     break

@@ -1,7 +1,13 @@
+import json
 from hashlib import sha512
+from pickle import load
+
 from prettytable import PrettyTable
 
 #Bloco de código para mostrar o menu e o submenu
+import Task
+
+
 def PegarOpcaoDoMenu(len_menu):
 	while True:
 		if(len_menu == 3):
@@ -36,9 +42,9 @@ def CriptografarSenha(senha):
 	hashpass=hash.hexdigest()
 	return hashpass
 #Bloco de código para criar uma tabela com as tarefas de um usuário
-def OrdenaTask(user, taskdao, dicttasks):
+def OrdenaTask(user, dicttasks):
 	table_tasks = PrettyTable(["Id", "Título", "Descrição", "Prioridade"])
-	qtdIds = taskdao.getUltimoId(user.login)
+	qtdIds = getUltimoId(user.login)
 
 	# Alinha as colunas
 	table_tasks.align["Id"] = "l"
@@ -64,3 +70,21 @@ def OrdenaTask(user, taskdao, dicttasks):
 				table_tasks.add_row([task.id_task, task.titulo, task.descricao, strprioridade])
 				user.tasks.append([task.id_task, task.titulo, task.descricao, strprioridade])
 	return table_tasks
+
+# Bloco de código para pegar o ultimo Id atribuído a uma tarefa de determinado usuário
+def getUltimoId(nick):
+	maptasks = {}
+	try:
+		with open("Tasks/" + nick + ".id", 'rb') as file:
+			while True:
+				try:
+					task = load(file)
+					for chave, valor in task.items():
+						maptasks[chave] = valor
+				except EOFError:
+					break
+		ultimo_id = len(maptasks)
+		return ultimo_id
+	except:
+		ultimo_id = len(maptasks)
+		return ultimo_id
