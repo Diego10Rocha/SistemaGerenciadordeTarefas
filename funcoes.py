@@ -37,24 +37,21 @@ def CriptografarSenha(senha):
 	return hashpass
 #Bloco de código para criar uma tabela com as tarefas de um usuário
 def OrdenaTask(user, taskdao, dicttasks):
-	tasks = PrettyTable(["Id", "Título", "Descrição", "Prioridade"])
+	table_tasks = PrettyTable(["Id", "Título", "Descrição", "Prioridade"])
 	qtdIds = taskdao.getUltimoId(user.login)
 
 	# Alinha as colunas
-	tasks.align["Id"] = "l"
-	tasks.align["Título"]="l"
-	tasks.align["Descrição"] = "l"
-	tasks.align["Prioridade"] = "l"
+	table_tasks.align["Id"] = "l"
+	table_tasks.align["Título"]="l"
+	table_tasks.align["Descrição"] = "l"
+	table_tasks.align["Prioridade"] = "l"
 
 	numprioridade = ""
 	for i in range(3):
 		for j in range(qtdIds):
-			values_dict= dicttasks.get(str(i+1)+str(j+1), "")
-			if(values_dict):
-				numprioridade = values_dict[3]
-				idtask = values_dict[0]
-				titulo_task = values_dict[1]
-				descricao_task = values_dict[2]
+			task = dicttasks.get(str(i+1)+str(j+1), "")
+			if(task):
+				numprioridade = task.prioridade
 
 			if(numprioridade == "1"):
 				strprioridade = "Alta"
@@ -63,7 +60,7 @@ def OrdenaTask(user, taskdao, dicttasks):
 			elif(numprioridade == "3"):
 				strprioridade = "Baixa"
 
-			if(values_dict):
-				tasks.add_row([idtask, titulo_task, descricao_task, strprioridade])
-				user.tasks.append([idtask, titulo_task, descricao_task, strprioridade])
-	return tasks
+			if(task):
+				table_tasks.add_row([task.id_task, task.titulo, task.descricao, strprioridade])
+				user.tasks.append([task.id_task, task.titulo, task.descricao, strprioridade])
+	return table_tasks

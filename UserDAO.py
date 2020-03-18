@@ -2,10 +2,9 @@ import json
 class UserDAO:
 	#Bloco de código para cadastrar um usuário
 	def insertUser(self):
-		with open("usuarios.txt", "a") as arquivo:
+		with open("usuarios.txt", "a", encoding="UTF-8") as arquivo:
 			if(UserDAO.getDicUser("")):
 				arquivo.write(',"'+self.login+'":"'+self.password+'"')
-
 			else:
 				arquivo.write('"'+self.login+'":"'+self.password+'"')
 
@@ -13,12 +12,10 @@ class UserDAO:
 	def getDicUser(self):
 		dicusers = {}
 		try:
-			with open("usuarios.txt", "r") as arquivo:
+			with open("usuarios.txt", "r", encoding="UTF-8") as arquivo:
 				userjson = arquivo.read()
 				userjson = '{'+userjson+'}'
-				#print(userjson)
 				dicusers = json.loads(userjson)
-				#print(dicusers)
 				return dicusers
 		except:
 			return dicusers
@@ -28,8 +25,7 @@ class UserDAO:
 		users = UserDAO.getDicUser("")
 		userverify = users.get(nick, False)
 		if(userverify == password):
-			print("Usuario logado!!")
 			return True
 		else:
-			print("Usuário e/ou senha incorreto(s)")
+			input("Usuário e/ou senha incorreto(s).\nAperte enter para voltar ao menu.")
 			return False
