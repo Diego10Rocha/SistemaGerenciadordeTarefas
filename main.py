@@ -174,15 +174,18 @@ while(option != 3):
                                 if(dicttasks.get("1" + id_edit, "")):
                                     dicttasks["1" + id_edit].prioridade = new_priorirty
                                     dicttasks[new_priorirty + id_edit] = dicttasks["1"+id_edit]
-                                    del dicttasks["1"+id_edit]
+                                    if(new_priorirty != 1):
+                                        del dicttasks["1"+id_edit]
                                 elif(dicttasks.get("2" + id_edit, "")):
                                     dicttasks["2"+id_edit].prioridade = new_priorirty
                                     dicttasks[new_priorirty + id_edit] = dicttasks["2"+id_edit]
-                                    del dicttasks["2"+id_edit]
+                                    if(new_priorirty != 2):
+                                        del dicttasks["2"+id_edit]
                                 elif(dicttasks.get("3"+id_edit, "")):
                                     dicttasks["3"+id_edit].prioridade = new_priorirty
                                     dicttasks[new_priorirty + id_edit] = dicttasks["3"+id_edit]
-                                    del dicttasks["3"+id_edit]
+                                    if(new_priorirty != 3):
+                                        del dicttasks["3"+id_edit]
                                 os.system("cls")
                                 Task.DeleteOrUpdate(Task, dicttasks, nickname)
                         else:
