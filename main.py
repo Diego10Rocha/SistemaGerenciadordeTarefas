@@ -173,7 +173,7 @@ while(option != 3):
                                     new_priorirty = input("Digite qual a nova prioridade:\n1-Alta\n2-Média\n3-Baixa\n")
                                 if(dicttasks.get("1" + id_edit, "")):
                                     dicttasks["1" + id_edit].prioridade = new_priorirty
-                                    dicttasks[new_priorirty + id_edit] = dicttask["1"+id_edit]
+                                    dicttasks[new_priorirty + id_edit] = dicttasks["1"+id_edit]
                                     del dicttasks["1"+id_edit]
                                 elif(dicttasks.get("2" + id_edit, "")):
                                     dicttasks["2"+id_edit].prioridade = new_priorirty
@@ -196,13 +196,12 @@ while(option != 3):
                 #Bloco de código para excluir as tarefas do usuário logado
                 elif(option == 4):
                     os.system("cls")
-                    dicttasks = Task.getDicTask(Task, user.login)
-                    if(dicttasks):
-                        tasks = OrdenaTask(user, dicttasks)
+                    dicttask = Task.getDicTask(Task, user.login)
+                    if(dicttask):
+                        tasks = OrdenaTask(user, dicttask)
                         print(tasks)
                         id_excluir = input("Digite o Id da tarefa que deseja excluir: ")
                         os.system("cls")
-                        dicttask = Task.getDicTask(Task, user.login)
 
                         if(dicttask.get("1"+id_excluir, "")):
                             del dicttask["1"+id_excluir]
