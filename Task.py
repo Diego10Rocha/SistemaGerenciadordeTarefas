@@ -2,7 +2,6 @@ from pickle import *
 from funcoes import *
 import os
 
-
 class Task:
 	def __init__(self, titulo, descricao, prioridade, id_task, user):
 		self.titulo = titulo

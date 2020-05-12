@@ -1,12 +1,9 @@
-import json
 from hashlib import sha512
 from pickle import load
 
 from prettytable import PrettyTable
 
 #Bloco de código para mostrar o menu e o submenu
-import Task
-
 
 def PegarOpcaoDoMenu(len_menu):
 	while True:
