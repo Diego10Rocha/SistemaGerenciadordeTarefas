@@ -1,0 +1,14 @@
+[[package]]
+category = "main"
+description = "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format."
+name = "prettytable"
+optional = false
+python-versions = "*"
+version = "0.7.2"
+
+[metadata]
+content-hash = "6b3bbb299711f1f38a73fe280a2450d7dba598884e64b8dde962b415f87f5d90"
+python-versions = "^3.8"
+
+[metadata.hashes]
+prettytable = ["2d5460dc9db74a32bcc8f9f67de68b2c4f4d2f01fa3bd518764c69156d9cacd9", "853c116513625c738dc3ce1aee148b5b5757a86727e67eff6502c7ca59d43c36", "a53da3b43d7a5c229b5e3ca2892ef982c46b7923b51e98f0db49956531211c4f"]
